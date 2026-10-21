@@ -5,18 +5,18 @@
 | 파일 | 내용 |
 | --- | --- |
 | `server.js` | 인증키(`.env`)를 가진 Node 서버. 브라우저 대신 API를 부르고 결과만 `/api/exit`로 내려 준다. 외부 패키지 없음 |
-| `subwaypath.html` | 화면 하나(CSS·JS 포함). 서버가 `/`와 `/subwaypath.html`로 내준다 |
+| `index.html` | 화면 하나(CSS·JS 포함). 서버가 `/`와 `/index.html`로 내준다 |
 | `.env` | `DATA_GO_KR_KEY`, `PORT`. 커밋하지 않고 내용도 출력하지 않는다. 양식은 `.env.example` |
 
 ## 실행
-- 먼저 `node server.js`로 서버를 켠다. 그다음 `http://localhost:3000`으로 열거나, `subwaypath.html`을 더블클릭(`file://`)으로 열어도 된다. 어느 쪽이든 서버가 꺼져 있으면 검색이 안 되고 "서버가 켜져 있는지 확인해 주세요" 문구가 뜬다.
-- 파일로 열면 화면이 `http://localhost:3000/api/exit`를 부른다. 서버는 Origin이 `null`인 요청(파일로 연 페이지)에만 CORS를 허용한다. `.env`의 `PORT`를 바꾸면 `subwaypath.html`의 `localhost:3000`도 같이 바꾼다.
+- 먼저 `node server.js`로 서버를 켠다. 그다음 `http://localhost:3000`으로 열거나, `index.html`을 더블클릭(`file://`)으로 열어도 된다. 어느 쪽이든 서버가 꺼져 있으면 검색이 안 되고 "서버가 켜져 있는지 확인해 주세요" 문구가 뜬다.
+- 파일로 열면 화면이 `http://localhost:3000/api/exit`를 부른다. HTML을 IDE 미리보기·Live Server(`localhost`의 다른 포트)로 열어도 같다. 서버는 Origin이 `null`이거나 `localhost`·`127.0.0.1`인 요청에만 CORS를 허용한다. `.env`의 `PORT`를 바꾸면 `index.html`의 `localhost:3000`도 같이 바꾼다.
 - 이 화면은 서버가 필요해서 `.claude/rules/api.md`의 "키 없는 API만" · "더블클릭만으로 열려야 한다" 규칙의 예외다. 대신 키는 서버에만 두고 화면 코드와 로그에 넣지 않는다.
 
 API 화면 규칙은 `.claude/rules/api.md`에 있고 자동으로 적용된다. 화면을 만들거나 고친 뒤 규칙을 지켰는지 보려면 `/api-check`(`.claude/skills/api-check/SKILL.md`)를 쓴다. 이 스킬은 검사만 하고 고치지 않는다. 규칙 파일이나 스킬을 새로 만들면 여기에도 한 줄 적는다.
 
 ## 서버 규칙 (`server.js`)
-- 화면 파일은 `subwaypath.html` 하나만 내준다. 다른 파일(`.env` 등)은 내보내지 않는다.
+- 화면 파일은 `index.html` 하나만 내준다. 다른 파일(`.env` 등)은 내보내지 않는다.
 - 화면에서 받는 값은 `CLEAN` 정규식(한글·영문·숫자·괄호·공백, 20자 이하)을 통과한 것만 쓴다. 받는 값은 `stnNm`(역명), `line`(호선), `stnCd`(역코드)뿐이다.
 - 같은 검색은 10분간 캐시하고, 분당 60회까지만 받는다(일일 호출 한도 10,000건 보호).
 - 업스트림 오류는 로그에 메시지만 남기고(키가 든 주소는 남기지 않는다) 화면에는 한국어 문구만 보낸다.

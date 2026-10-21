@@ -85,8 +85,8 @@ http.createServer(async (req, res) => {
   if (origin === "null" || /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin || "")) res.setHeader("Access-Control-Allow-Origin", origin);
 
   // 화면 파일은 이것 하나만 내준다 (.env 같은 다른 파일은 절대 안 나간다)
-  if (url.pathname === "/" || url.pathname === "/subwaypath.html") {
-    return send(res, 200, fs.readFileSync(path.join(__dirname, "subwaypath.html")), "text/html; charset=utf-8");
+  if (url.pathname === "/" || url.pathname === "/index.html") {
+    return send(res, 200, fs.readFileSync(path.join(__dirname, "index.html")), "text/html; charset=utf-8");
   }
 
   if (url.pathname === "/api/exit") {
