@@ -10,6 +10,12 @@ body {
   font-synthesis: none; /* 머니그라피는 굵기가 하나라 가짜 굵게·기울임을 막는다 */
 }
 
+/* TP-7 녹음기 화면 글자: Figma 글꼴 대신 이 사이트 글꼴을 쓴다(Shadow DOM 안으로 변수만 넘어간다) */
+.tp7 {
+  --tp7-font-pixel: var(--font-pixel);
+  --tp7-font-logo: var(--font-sans);
+}
+
 /* 1. 디스플레이: 서비스 이름 하나만 */
 h1 {
   font-family: var(--font-display);

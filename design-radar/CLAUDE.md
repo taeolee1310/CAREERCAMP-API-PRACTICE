@@ -13,7 +13,8 @@
 | `api/news.py` | 공개 RSS 7곳을 모아 `/api/news`로 내려 준다. 국내 출처는 디자인 키워드로 거른다 |
 | `api/organize.py` | `POST /api/organize`. 원문을 Gemini로 정리해 `ideas.md` 형식의 md와 파일 이름을 돌려준다. 원문은 LLM이 고치지 않는다 |
 | `public/js/app.js` | `const API`, 공통 도우미(`$`, `reduced`, `kst`, `cssSec`, `reveal`), 뉴스 화면 |
-| `public/js/ideas.js` | 음성 받아쓰기·소리 크기 링·정리·저장. IIFE로 감싼다 |
+| `public/vendor/tp7/` | TP-7 녹음기 `<tp7-recorder>`(미리 빌드한 파일 + 이미지). 원본은 `../../TP-7 에셋`, 고칠 때는 거기서 `npm run build:embed` 후 `dist-embed/`의 `tp7-recorder.js`와 `assets/`를 복사한다 |
+| `public/js/ideas.js` | 음성 받아쓰기(TP-7 녹음·정지 키와 연결)·정리·저장. IIFE로 감싼다 |
 | `dev.py` | 로컬 실행용 서버(`public/` + `/api/*` + `.env` 읽기). `/api/ideas` 저장·목록은 여기에만 있다. 배포에는 쓰지 않는다 |
 | `ideas/` | 정리된 아이디어 md. 로컬에서만 쌓인다 |
 | `.env` | 키. 커밋하지 않고 내용도 출력하지 않는다. 양식은 `.env.example` |

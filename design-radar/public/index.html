@@ -32,11 +32,9 @@
           <span class="mode" id="mode"></span>
         </div>
         <div class="mic-wrap">
-          <button class="mic" id="mic" type="button" aria-pressed="false" aria-label="말하기 시작">
-            <span class="ring" id="ring" aria-hidden="true"></span>
-            <span class="glyph" aria-hidden="true"></span>
-          </button>
-          <p class="mic-state" id="micState" aria-live="polite">마이크를 누르고 말해 보세요.</p>
+          <!-- TP-7 녹음기: 녹음 키 = 받아쓰기 시작, 정지 키 = 끝. 원본은 TP-7 에셋 프로젝트(npm run build:embed) -->
+          <tp7-recorder class="tp7" id="tp7"></tp7-recorder>
+          <p class="mic-state" id="micState" aria-live="polite">녹음 버튼을 누르고 말해 보세요.</p>
         </div>
         <label class="sr" for="draft">아이디어 원문</label>
         <textarea id="draft" rows="4" maxlength="2000" placeholder="말한 내용이 여기에 적혀요. 직접 써도 돼요."></textarea>
@@ -78,5 +76,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="js/app.js"></script>
   <script src="js/ideas.js"></script>
+  <!-- TP-7은 직접 호스팅하는 미리 빌드한 파일(React 포함). 외부 CDN이 아니다 -->
+  <script type="module" src="vendor/tp7/tp7-recorder.js"></script>
 </body>
 </html>

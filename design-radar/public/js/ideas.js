@@ -8,14 +8,13 @@
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 
   const voice = $("voice");
-  const mic = $("mic");
-  const ring = $("ring");
+  const tp7 = $("tp7"); // <tp7-recorder>: 녹음 키를 누르면 tp7-state 이벤트가 온다
   const draft = $("draft");
   const organizeBtn = $("organize");
 
   const STATE_TEXT = {
-    idle: "마이크를 누르고 말해 보세요.",
-    listening: "듣고 있어요. 다 말했으면 한 번 더 눌러 주세요.",
+    idle: "녹음 버튼을 누르고 말해 보세요.",
+    listening: "듣고 있어요. 다 말했으면 정지 버튼을 눌러 주세요.",
     organizing: "키워드로 정리하고 있어요.",
     saved: "정리했어요. 다른 아이디어도 이어서 말해 보세요.",
   };
@@ -27,15 +26,13 @@
   let rec = null;
   let listening = false;
   let base = "";
-  let meter = null;
-  let level = 0;
 
   function setState(state, message) {
     voice.dataset.state = state;
     $("micState").textContent = message || STATE_TEXT[state];
-    mic.setAttribute("aria-pressed", String(state === "listening"));
-    mic.setAttribute("aria-label", state === "listening" ? "말하기 멈추기" : "말하기 시작");
-    mic.disabled = !SR || state === "organizing";
+    // 받아쓰기가 오류로 멈추거나 시작에 실패하면 녹음 키도 같이 올라온다
+    tp7.toggleAttribute("recording", state === "listening");
+    tp7.toggleAttribute("disabled", !SR || state === "organizing");
     organizeBtn.disabled = state === "organizing" || draft.value.trim().length < 5;
   }
 
@@ -48,43 +45,6 @@
     if (voice.dataset.state !== "organizing") {
       organizeBtn.disabled = draft.value.trim().length < 5;
     }
-  }
-
-  /* 소리 크기 → 링 크기. transform·opacity만 바꾼다 */
-  async function startMeter() {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const ctx = new AudioContext();
-      const analyser = ctx.createAnalyser();
-      analyser.fftSize = 256;
-      ctx.createMediaStreamSource(stream).connect(analyser);
-      const buf = new Uint8Array(analyser.fftSize);
-      meter = { stream, ctx, raf: 0 };
-      const tick = () => {
-        analyser.getByteTimeDomainData(buf);
-        let sum = 0;
-        for (const v of buf) sum += ((v - 128) / 128) ** 2;
-        level = level * 0.8 + Math.min(1, Math.sqrt(sum / buf.length) * 4) * 0.2;
-        ring.style.opacity = String(0.25 + level * 0.6);
-        ring.style.transform = reduced.matches ? "" : `scale(${1 + level * 0.8})`;
-        meter.raf = requestAnimationFrame(tick);
-      };
-      tick();
-    } catch {
-      meter = null; // 레벨 표시만 빠지고 받아쓰기는 계속된다
-    }
-  }
-
-  function stopMeter() {
-    if (meter) {
-      cancelAnimationFrame(meter.raf);
-      meter.stream.getTracks().forEach((t) => t.stop());
-      meter.ctx.close();
-      meter = null;
-    }
-    level = 0;
-    ring.style.opacity = "";
-    ring.style.transform = "";
   }
 
   function startListening() {
@@ -121,7 +81,6 @@
     }
     listening = true;
     setState("listening");
-    startMeter();
   }
 
   function stopListening(state = "idle", message) {
@@ -131,7 +90,6 @@
       rec.stop();
       rec = null;
     }
-    stopMeter();
     setState(state, message || (draft.value.trim() ? "다 들었어요. 내용을 확인하고 정리하기를 눌러 주세요." : undefined));
     if (state === "idle" && draft.value.trim()) organizeBtn.focus();
   }
@@ -316,7 +274,13 @@
   }
 
   /* 시작 */
-  mic.addEventListener("click", () => (listening ? stopListening() : startListening()));
+  tp7.addEventListener("tp7-state", (e) => {
+    if (e.detail.state === "recording") {
+      if (!listening) startListening();
+    } else if (listening) {
+      stopListening();
+    }
+  });
   organizeBtn.addEventListener("click", organize);
   draft.addEventListener("input", updateCount);
   draft.addEventListener("keydown", (e) => {

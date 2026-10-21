@@ -1,0 +1,25 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="68.6258" height="68.6258" viewBox="0 0 68.6258 68.6258" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Ellipse 89">
+<g filter="url(#filter0_i_0_50)">
+<ellipse cx="34.3129" cy="34.3129" rx="34.3129" ry="34.3129" fill="url(#paint0_linear_0_50)"/>
+</g>
+<path d="M34.3125 0.857422C52.7891 0.857422 67.7674 15.836 67.7676 34.3125C67.7676 52.7892 52.7892 67.7676 34.3125 67.7676C15.836 67.7674 0.857422 52.7891 0.857422 34.3125C0.85764 15.8361 15.8361 0.857645 34.3125 0.857422Z" stroke="#7C7C7C" stroke-opacity="0.3" stroke-width="1.71564"/>
+</g>
+<defs>
+<filter id="filter0_i_0_50" x="0" y="0" width="68.6258" height="75.4884" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="6.86258"/>
+<feGaussianBlur stdDeviation="8.57822"/>
+<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
+<feBlend mode="normal" in2="shape" result="effect1_innerShadow_0_50"/>
+</filter>
+<linearGradient id="paint0_linear_0_50" x1="3.91288" y1="19.2634" x2="46.1914" y2="67.1082" gradientUnits="userSpaceOnUse">
+<stop stop-color="#929292"/>
+<stop offset="0.734211" stop-color="#727171" stop-opacity="0.49"/>
+<stop offset="1" stop-color="#A9A9A9" stop-opacity="0.81"/>
+</linearGradient>
+</defs>
+</svg>

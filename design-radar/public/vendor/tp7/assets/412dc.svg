@@ -1,0 +1,39 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="26.7641" height="25.7347" viewBox="0 0 26.7641 25.7347" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="Ellipse 92" filter="url(#filter0_di_0_51)">
+<use xlink:href="#stroke0_0_51" fill="url(#paint0_linear_0_51)"/>
+<mask id="stroke1_0_51" fill="white">
+<use xlink:href="#stroke0_0_51"/>
+</mask>
+<path d="M24.019 12.0095C24.019 18.6422 18.6422 24.019 12.0095 24.019C5.37684 24.019 0 18.6422 0 12.0095C0 5.37684 5.37684 0 12.0095 0C18.6422 0 24.019 5.37684 24.019 12.0095Z" stroke-width="3.43129" stroke="url(#paint1_linear_0_51)" mask="url(#stroke1_0_51)"/>
+</g>
+<defs>
+<filter id="filter0_di_0_51" x="0" y="0" width="26.7641" height="25.7347" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dx="2.74503" dy="1.71564"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.75 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_0_51"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_0_51" result="shape"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dx="1.71564" dy="3.43129"/>
+<feGaussianBlur stdDeviation="0.857822"/>
+<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"/>
+<feBlend mode="normal" in2="shape" result="effect2_innerShadow_0_51"/>
+</filter>
+<linearGradient id="paint0_linear_0_51" x1="7.50595" y1="21.0167" x2="18.524" y2="6.92106" gradientUnits="userSpaceOnUse">
+<stop/>
+<stop offset="0.211539" stop-color="#363636"/>
+<stop offset="0.5625" stop-color="white"/>
+<stop offset="0.845881" stop-color="#565555"/>
+<stop offset="1" stop-color="#282626"/>
+</linearGradient>
+<linearGradient id="paint1_linear_0_51" x1="4.50357" y1="3.00238" x2="19.5155" y2="21.0167" gradientUnits="userSpaceOnUse">
+<stop stop-color="#242424"/>
+<stop offset="0.53125" stop-color="#D7D7D7"/>
+<stop offset="1" stop-color="#4D4D4D"/>
+</linearGradient>
+<path id="stroke0_0_51" d="M24.019 12.0095C24.019 18.6422 18.6422 24.019 12.0095 24.019C5.37684 24.019 0 18.6422 0 12.0095C0 5.37684 5.37684 0 12.0095 0C18.6422 0 24.019 5.37684 24.019 12.0095Z"/>
+</defs>
+</svg>
