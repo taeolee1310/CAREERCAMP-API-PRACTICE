@@ -14,9 +14,9 @@
       <div>
         <p class="eyebrow" id="today"></p>
         <h1>Design Radar</h1>
-        <p class="lede">말로 남긴 아이디어와 오늘의 디자인 소식을 한곳에 모아요.</p>
+        <p class="lede">떠오른 아이디어는 말로 남기고, 오늘의 디자인 소식은 한눈에 봐요.</p>
       </div>
-      <button class="theme" id="theme" type="button" aria-label="화면 색상 바꾸기"></button>
+      <button class="theme" id="theme" type="button" aria-label="화면 밝기 바꾸기"></button>
     </header>
 
     <section class="capture" aria-label="아이디어">
@@ -30,20 +30,20 @@
             <span class="ring" id="ring" aria-hidden="true"></span>
             <span class="glyph" aria-hidden="true"></span>
           </button>
-          <p class="mic-state" id="micState" aria-live="polite">버튼을 누르고 말해 보세요.</p>
+          <p class="mic-state" id="micState" aria-live="polite">마이크를 누르고 말해 보세요.</p>
         </div>
         <label class="sr" for="draft">아이디어 원문</label>
-        <textarea id="draft" rows="4" maxlength="2000" placeholder="말하면 여기에 적혀요. 직접 써도 돼요."></textarea>
+        <textarea id="draft" rows="4" maxlength="2000" placeholder="말한 내용이 여기에 적혀요. 직접 써도 돼요."></textarea>
         <div class="row">
           <span class="count" id="count">0 / 2000</span>
           <button class="primary" id="organize" type="button" disabled>정리하기</button>
         </div>
-        <p class="note">정리는 무료 Gemini가 해요. 무료 사용분의 입력은 Google이 서비스 개선에 쓸 수 있으니 민감한 내용은 빼 주세요.</p>
+        <p class="note">정리는 Gemini 무료 버전이 맡아요. 입력한 글은 Google 서비스 개선에 쓰일 수 있어요. 민감한 내용은 빼고 적어 주세요.</p>
         <div id="result"></div>
       </div>
 
       <div class="panel recent">
-        <h2 class="section-title">쌓인 아이디어</h2>
+        <h2 class="section-title">모아 둔 아이디어</h2>
         <div class="kw-cloud" id="kwCloud"></div>
         <ul class="idea-list" id="ideaList"></ul>
       </div>
@@ -61,9 +61,9 @@
       <p id="credit"></p>
       <section class="api" aria-labelledby="api-title">
         <h2 id="api-title">🔌 이 화면이 쓰는 API</h2>
-        <p>화면은 우리 서버 함수만 불러요. 외부 RSS와 Gemini는 서버가 대신 불러요.</p>
+        <p>화면은 우리 서버 함수만 불러요. 외부 RSS와 Gemini는 서버가 대신 받아 와요.</p>
         <p><code id="api-url"></code> · <a id="api-raw" target="_blank" rel="noopener">새 탭에서 원본 JSON 보기</a></p>
-        <p><code>POST /api/organize</code> 아이디어 정리(Gemini) · <code>/api/ideas</code> 저장·목록(로컬에서만)</p>
+        <p><code>POST /api/organize</code> 아이디어 정리(Gemini) · <code>/api/ideas</code> 저장·목록(내 컴퓨터에서만)</p>
       </section>
     </footer>
   </main>

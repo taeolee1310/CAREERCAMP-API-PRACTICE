@@ -14,10 +14,10 @@
   const organizeBtn = $("organize");
 
   const STATE_TEXT = {
-    idle: "버튼을 누르고 말해 보세요.",
-    listening: "듣고 있어요. 다 말했으면 버튼을 한 번 더 눌러 주세요.",
+    idle: "마이크를 누르고 말해 보세요.",
+    listening: "듣고 있어요. 다 말했으면 한 번 더 눌러 주세요.",
     organizing: "키워드로 정리하고 있어요.",
-    saved: "정리했어요. 이어서 다른 아이디어도 말해 보세요.",
+    saved: "정리했어요. 다른 아이디어도 이어서 말해 보세요.",
   };
 
   let canSave = false;
@@ -126,7 +126,7 @@
       rec = null;
     }
     stopMeter();
-    setState(state, message || (draft.value.trim() ? "다 들었어요. 원문을 확인하고 정리하기를 눌러 주세요." : undefined));
+    setState(state, message || (draft.value.trim() ? "다 들었어요. 내용을 확인하고 정리하기를 눌러 주세요." : undefined));
     if (state === "idle" && draft.value.trim()) organizeBtn.focus();
   }
 
@@ -179,8 +179,8 @@
       card.append(ul);
     }
     const foot = el("div", "idea-foot");
-    foot.append(el("span", "", savedAs ? `ideas/${savedAs}에 저장했어요.` : canSave ? "폴더에 저장하지 못했어요. md로 받아 주세요." : "이 버전은 서버에 저장하지 않아요."));
-    const dl = el("button", "ghost", "md 받기");
+    foot.append(el("span", "", savedAs ? `ideas/${savedAs}에 저장했어요.` : canSave ? "폴더에 저장하지 못했어요. md 파일로 받아 두세요." : "온라인 버전은 저장하지 않아요. md 파일로 받아 두세요."));
+    const dl = el("button", "ghost", "md 파일 받기");
     dl.type = "button";
     dl.addEventListener("click", () => download(idea));
     foot.append(dl);
@@ -193,7 +193,7 @@
       gsap.fromTo(
         kws.children,
         reduced.matches ? { opacity: 0 } : { opacity: 0, y: 10, scale: 0.9 },
-        { opacity: 1, y: 0, scale: 1, duration: cssSec("--dur-enter"), stagger: 0.05, delay: 0.1, ease: "back.out(2)", clearProps: "transform,opacity" }
+        { opacity: 1, y: 0, scale: 1, duration: cssSec("--dur-enter"), stagger: 0.05, delay: 0.1, ease: "expo.out", clearProps: "transform,opacity" }
       );
     }
   }
@@ -233,12 +233,12 @@
     const list = $("ideaList");
     if (!canSave) {
       cloud.replaceChildren();
-      list.replaceChildren(el("li", "empty", "배포판은 아이디어를 서버에 쌓지 않아요. 정리한 뒤 md를 받아 ideas 폴더에 넣어 주세요."));
+      list.replaceChildren(el("li", "empty", "온라인 버전은 아이디어를 모아 두지 않아요. 정리한 뒤 md 파일로 받아 두세요."));
       return;
     }
     if (!ideas.length) {
       cloud.replaceChildren();
-      list.replaceChildren(el("li", "empty", "아직 쌓인 아이디어가 없어요. 첫 아이디어를 말해 보세요."));
+      list.replaceChildren(el("li", "empty", "아직 모아 둔 아이디어가 없어요. 첫 아이디어를 말해 보세요."));
       return;
     }
     const counts = {};
@@ -273,7 +273,7 @@
     } catch {
       canSave = false; // 배포판에는 /api/ideas가 없다
     }
-    $("mode").textContent = canSave ? "로컬 · ideas 폴더에 저장" : "배포판 · md로 받기";
+    $("mode").textContent = canSave ? "내 컴퓨터 · ideas 폴더에 저장" : "온라인 · md 파일로 받기";
     renderIdeas();
   }
 
@@ -289,7 +289,7 @@
     setState("idle");
   } else {
     voice.classList.add("no-speech");
-    setState("idle", "이 브라우저는 음성 인식을 지원하지 않아요. 아래 칸에 글로 적어 주세요. (Chrome·Edge 권장)");
+    setState("idle", "이 브라우저는 음성 인식을 지원하지 않아요. 아래 칸에 글로 적어 주세요. Chrome이나 Edge에서는 말로도 남길 수 있어요.");
   }
   loadIdeas();
 })();

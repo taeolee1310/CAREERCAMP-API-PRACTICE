@@ -27,6 +27,10 @@
   --fs-lg: 1.0625rem;
   --fs-xl: clamp(1.75rem, 4vw, 2.5rem);
 
+  --track-tight: -.025em;   /* 큰 제목 */
+  --track-snug: -.01em;     /* 섹션·카드 제목 */
+  --track-loose: .01em;     /* 작은 글자 */
+
   --dur-press: 120ms;
   --dur-fade: 150ms;
   --dur-enter: 350ms;
@@ -59,4 +63,9 @@
     --danger: #e19a8f;
     --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
   }
+}
+
+/* 대비 높이기 설정: 경계선을 또렷하게 */
+@media (prefers-contrast: more) {
+  :root { --line: var(--muted); --shadow: none; }
 }
