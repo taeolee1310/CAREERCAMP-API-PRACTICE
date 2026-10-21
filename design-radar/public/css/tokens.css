@@ -34,7 +34,13 @@
   --dur-press: 120ms;
   --dur-fade: 150ms;
   --dur-enter: 350ms;
+  --dur-pulse: 1.4s;
   --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --ease-in-out: cubic-bezier(.45, 0, .55, 1);
+  /* GSAP은 CSS 곡선을 못 읽어서 GSAP 이름으로 따로 둔다. JS는 cssVar()로 읽는다 */
+  --gsap-ease-out: power3.out;   /* 일반 등장 */
+  --gsap-ease-pop: expo.out;     /* 시그니처 순간: 키워드 등장 */
+  --stagger: 40ms;               /* 목록 한 칸 사이 간격의 최댓값 */
 }
 
 :root[data-theme=dark] {

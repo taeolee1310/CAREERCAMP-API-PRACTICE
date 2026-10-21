@@ -20,6 +20,7 @@
     saved: "정리했어요. 다른 아이디어도 이어서 말해 보세요.",
   };
 
+  let mode = "loading"; // loading | local | online | error
   let canSave = false;
   let ideas = [];
   let sessionKeywords = [];
@@ -98,12 +99,17 @@
       draft.value = (base + text).slice(0, MAX_TEXT);
       updateCount();
     };
+    const ERRORS = {
+      "not-allowed": "마이크 권한이 꺼져 있어요. 주소창 왼쪽에서 마이크를 허용해 주세요.",
+      "service-not-allowed": "마이크 권한이 꺼져 있어요. 주소창 왼쪽에서 마이크를 허용해 주세요.",
+      "audio-capture": "마이크를 찾지 못했어요. 마이크가 연결됐는지 확인하거나 글로 적어 주세요.",
+      "no-speech": "목소리가 들리지 않았어요. 마이크에 조금 더 가까이 대고 다시 눌러 주세요.",
+      network: "음성 인식에 연결하지 못했어요. 인터넷 연결을 확인하거나 글로 적어 주세요.",
+      "language-not-supported": "이 브라우저는 한국어 음성 인식을 지원하지 않아요. 글로 적어 주세요.",
+    };
     rec.onerror = (e) => {
-      if (e.error === "not-allowed" || e.error === "service-not-allowed") {
-        stopListening("error", "마이크 권한이 꺼져 있어요. 주소창 왼쪽에서 마이크를 허용해 주세요.");
-      } else if (e.error === "network") {
-        stopListening("error", "음성 인식에 연결하지 못했어요. 인터넷 연결을 확인하거나 글로 적어 주세요.");
-      }
+      if (e.error === "aborted") return; // 직접 멈춘 경우
+      stopListening("error", ERRORS[e.error] || "음성 인식이 멈췄어요. 다시 눌러 주세요.");
     };
     rec.onend = () => {
       if (listening) stopListening();
@@ -179,7 +185,7 @@
       card.append(ul);
     }
     const foot = el("div", "idea-foot");
-    foot.append(el("span", "", savedAs ? `ideas/${savedAs}에 저장했어요.` : canSave ? "폴더에 저장하지 못했어요. md 파일로 받아 두세요." : "온라인 버전은 저장하지 않아요. md 파일로 받아 두세요."));
+    foot.append(el("span", "", savedAs ? `ideas/${savedAs}에 저장했어요.` : mode === "online" ? "온라인 버전은 저장하지 않아요. md 파일로 받아 두세요." : "폴더에 저장하지 못했어요. md 파일로 받아 두세요."));
     const dl = el("button", "ghost", "md 파일 받기");
     dl.type = "button";
     dl.addEventListener("click", () => download(idea));
@@ -187,13 +193,15 @@
     card.append(foot);
     box.replaceChildren(card);
 
-    // 시그니처 순간: 키워드가 하나씩 떠오른다
+    // 시그니처 순간: 키워드가 하나씩 떠오른다. 전체 길이(stagger 합 + 한 칸 시간)를 600ms 안으로
     if (window.gsap) {
-      gsap.fromTo(card, { opacity: 0, y: reduced.matches ? 0 : 8 }, { opacity: 1, y: 0, duration: cssSec("--dur-enter"), ease: "power3.out", clearProps: "transform,opacity" });
+      const dur = cssSec("--dur-enter");
+      gsap.fromTo(card, { opacity: 0, y: reduced.matches ? 0 : 8 }, { opacity: 1, y: 0, duration: dur, ease: cssVar("--gsap-ease-out"), clearProps: "transform,opacity" });
+      const n = kws.children.length;
       gsap.fromTo(
         kws.children,
         reduced.matches ? { opacity: 0 } : { opacity: 0, y: 10, scale: 0.9 },
-        { opacity: 1, y: 0, scale: 1, duration: cssSec("--dur-enter"), stagger: 0.05, delay: 0.1, ease: "expo.out", clearProps: "transform,opacity" }
+        { opacity: 1, y: 0, scale: 1, duration: dur, stagger: Math.min(cssSec("--stagger"), 0.25 / Math.max(1, n - 1)), ease: cssVar("--gsap-ease-pop"), clearProps: "transform,opacity" }
       );
     }
   }
@@ -227,11 +235,26 @@
     }
   }
 
-  /* 쌓인 아이디어 */
+  /* 쌓인 아이디어: 불러오는 중 · 비어 있음 · 실패 · 온라인 버전을 따로 보여 준다 */
   function renderIdeas() {
     const cloud = $("kwCloud");
     const list = $("ideaList");
-    if (!canSave) {
+    if (mode === "loading") {
+      cloud.replaceChildren();
+      list.replaceChildren(...[0, 1, 2].map(() => el("li", "idea-skel")));
+      return;
+    }
+    if (mode === "error") {
+      cloud.replaceChildren();
+      const li = el("li", "ideas-fail", "모아 둔 아이디어를 불러오지 못했어요. 서버가 켜져 있는지 확인하고 다시 불러와 주세요.");
+      const retry = el("button", "ghost", "다시 불러오기");
+      retry.type = "button";
+      retry.addEventListener("click", loadIdeas);
+      li.append(document.createElement("br"), retry);
+      list.replaceChildren(li);
+      return;
+    }
+    if (mode === "online") {
       cloud.replaceChildren();
       list.replaceChildren(el("li", "empty", "온라인 버전은 아이디어를 모아 두지 않아요. 정리한 뒤 md 파일로 받아 두세요."));
       return;
@@ -263,17 +286,32 @@
     reveal([...list.children]);
   }
 
+  const MODE_TEXT = {
+    loading: "저장 방식을 확인하고 있어요",
+    local: "내 컴퓨터 · ideas 폴더에 저장",
+    online: "온라인 · md 파일로 받기",
+    error: "저장 폴더에 연결하지 못했어요",
+  };
+
   async function loadIdeas() {
+    mode = "loading";
+    $("mode").textContent = MODE_TEXT.loading;
+    renderIdeas();
     try {
       const res = await fetch(API.ideas); // 🔌 API 호출
-      const json = await res.json();
-      if (!json.ok) throw new Error();
-      ideas = json.data;
-      canSave = true;
+      if (res.status === 404) {
+        mode = "online"; // 배포판에는 /api/ideas가 없다
+      } else {
+        const json = await res.json();
+        if (!json.ok) throw new Error();
+        ideas = json.data;
+        mode = "local";
+      }
     } catch {
-      canSave = false; // 배포판에는 /api/ideas가 없다
+      mode = "error"; // 로컬 서버가 꺼졌거나 오류. 배포판으로 착각하지 않는다
     }
-    $("mode").textContent = canSave ? "내 컴퓨터 · ideas 폴더에 저장" : "온라인 · md 파일로 받기";
+    canSave = mode === "local";
+    $("mode").textContent = MODE_TEXT[mode];
     renderIdeas();
   }
 

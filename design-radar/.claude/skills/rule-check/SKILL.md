@@ -18,7 +18,7 @@ agent: general-purpose
 2. 대상 파일에서 규칙마다 **코드의 근거(파일:줄)** 를 찾는다.
 3. 아래 기본 검사는 규칙에 없어도 반드시 본다.
    - ① 키 노출: `key=`, `token=`, `apikey`, `AIza`, `sk-`, `.env` 값이 화면 코드·`api/` 응답·로그·`ideas/`에 있나. 있으면 가장 위에 **위험**으로 적는다.
-   - ② 토큰: `public/css/tokens.css` 밖에 `#` 색상 값이 있나
+   - ② 토큰: `public/css/tokens.css` 밖에 색상 값(`#…`, `rgb()`, `rgba()`, `hsl()`)이나 토큰이 아닌 시간·곡선·간격 값이 있나
    - ③ 움직임: `transition: all`, `transform`·`opacity` 외 속성 애니메이션, `prefers-reduced-motion` 처리가 있나
    - ④ 상태: 데이터 카드마다 로딩·비어 있음·실패가 있나
    - ⑤ 출처·기준 시각이 보이고 "실시간"이라는 말이 없나

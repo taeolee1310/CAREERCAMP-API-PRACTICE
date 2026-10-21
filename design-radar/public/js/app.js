@@ -14,7 +14,8 @@ const $ = (id) => document.getElementById(id);
 const root = document.documentElement;
 const reduced = matchMedia("(prefers-reduced-motion: reduce)");
 const kst = (opts, d = new Date()) => new Intl.DateTimeFormat("ko-KR", { timeZone: "Asia/Seoul", ...opts }).format(d);
-const cssSec = (name) => parseFloat(getComputedStyle(root).getPropertyValue(name)) / 1000;
+const cssVar = (name) => getComputedStyle(root).getPropertyValue(name).trim();
+const cssSec = (name) => parseFloat(cssVar(name)) / 1000;
 
 let news = null;
 let group = "all";
@@ -42,11 +43,11 @@ $("theme").addEventListener("click", () => {
 function reveal(nodes) {
   if (!window.gsap || !nodes.length) return;
   const dur = cssSec("--dur-enter");
-  const stagger = Math.min(0.04, 0.25 / nodes.length);
+  const stagger = Math.min(cssSec("--stagger"), 0.25 / nodes.length);
   gsap.fromTo(
     nodes,
     reduced.matches ? { opacity: 0 } : { opacity: 0, y: 8 },
-    { opacity: 1, y: 0, duration: dur, stagger, ease: "power3.out", clearProps: "transform,opacity" }
+    { opacity: 1, y: 0, duration: dur, stagger, ease: cssVar("--gsap-ease-out"), clearProps: "transform,opacity" }
   );
 }
 

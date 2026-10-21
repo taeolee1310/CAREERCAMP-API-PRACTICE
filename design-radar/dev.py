@@ -8,6 +8,7 @@ import mimetypes
 import os
 import re
 import sys
+from datetime import datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
@@ -36,6 +37,10 @@ import organize  # noqa: E402
 PORT = int(os.environ.get("PORT", "3000"))
 FILENAME = re.compile(r"\d{4}-\d{2}-\d{2}-\d{4}-[a-z0-9-]{1,30}\.md")
 MAX_MD = 20_000
+
+
+def now_iso():
+    return datetime.now(organize.KST).isoformat()
 
 
 def read_ideas():
@@ -69,7 +74,7 @@ def save_idea(body):
         target = IDEAS / name.replace(".md", f"-{n}.md")
         n += 1
     target.write_text(md, encoding="utf-8")
-    return 200, {"ok": True, "data": {"filename": target.name}}
+    return 200, {"ok": True, "data": {"filename": target.name}, "asOf": now_iso()}
 
 
 class Dev(BaseHTTPRequestHandler):
@@ -88,7 +93,11 @@ class Dev(BaseHTTPRequestHandler):
             payload = news.get_news()
             return self._json(200 if payload["ok"] else 502, payload)
         if path == "/api/ideas":
-            return self._json(200, {"ok": True, "data": read_ideas()})
+            try:
+                return self._json(200, {"ok": True, "data": read_ideas(), "asOf": now_iso()})
+            except OSError as e:
+                print("read ideas failed:", type(e).__name__)
+                return self._json(500, {"ok": False, "error": "ideas 폴더를 읽지 못했어요. 폴더 권한을 확인하고 다시 불러와 주세요."})
         target = (PUBLIC / ("index.html" if path == "/" else path.lstrip("/"))).resolve()
         if PUBLIC not in target.parents or not target.is_file():
             return self._send(404, "찾을 수 없어요".encode("utf-8"), "text/plain; charset=utf-8")
@@ -115,7 +124,11 @@ class Dev(BaseHTTPRequestHandler):
         if path == "/api/organize":
             return self._json(*organize.organize(body.get("text"), body.get("known") or []))
         if path == "/api/ideas":
-            return self._json(*save_idea(body))
+            try:
+                return self._json(*save_idea(body))
+            except OSError as e:
+                print("save idea failed:", type(e).__name__)
+                return self._json(500, {"ok": False, "error": "ideas 폴더에 저장하지 못했어요. md 파일로 받아 두세요."})
         self._json(404, {"ok": False, "error": "찾을 수 없어요."})
 
     def log_message(self, fmt, *args):
