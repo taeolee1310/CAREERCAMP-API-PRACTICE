@@ -1,0 +1,62 @@
+/* 색·간격·글자·움직임 값은 전부 여기서만 정한다. 색을 바꿀 때는 이 파일만 고친다. */
+:root {
+  --bg: #f3f1ec;
+  --surface: #fbfaf7;
+  --text: #202422;
+  --muted: #5f6663;
+  --line: #dedbd3;
+  --accent: #3f6b63;
+  --accent-ink: #ffffff;
+  --skeleton: #e8e5de;
+  --danger: #8a3b32;
+
+  --radius: 14px;
+  --radius-pill: 999px;
+  --shadow: 0 1px 2px rgba(20, 24, 22, .06), 0 8px 24px rgba(20, 24, 22, .05);
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 40px;
+
+  --font: "Pretendard Variable", Pretendard, system-ui, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --fs-sm: .8125rem;
+  --fs-md: .9375rem;
+  --fs-lg: 1.0625rem;
+  --fs-xl: clamp(1.75rem, 4vw, 2.5rem);
+
+  --dur-press: 120ms;
+  --dur-fade: 150ms;
+  --dur-enter: 350ms;
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+}
+
+:root[data-theme=dark] {
+  --bg: #121513;
+  --surface: #1a1e1c;
+  --text: #e8ebe9;
+  --muted: #a0a7a3;
+  --line: #2b312e;
+  --accent: #8bb8ae;
+  --accent-ink: #0f1412;
+  --skeleton: #232826;
+  --danger: #e19a8f;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme=light]) {
+    --bg: #121513;
+    --surface: #1a1e1c;
+    --text: #e8ebe9;
+    --muted: #a0a7a3;
+    --line: #2b312e;
+    --accent: #8bb8ae;
+    --accent-ink: #0f1412;
+    --skeleton: #232826;
+    --danger: #e19a8f;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
+  }
+}

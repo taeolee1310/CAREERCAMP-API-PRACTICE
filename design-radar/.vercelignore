@@ -1,0 +1,5 @@
+.env
+ideas/
+.claude/
+dev.py
+*.md
