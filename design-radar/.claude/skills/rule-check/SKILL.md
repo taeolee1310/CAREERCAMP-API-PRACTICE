@@ -22,6 +22,7 @@ agent: general-purpose
    - ③ 움직임: `transition: all`, `transform`·`opacity` 외 속성 애니메이션, `prefers-reduced-motion` 처리가 있나
    - ④ 상태: 데이터 카드마다 로딩·비어 있음·실패가 있나
    - ⑤ 출처·기준 시각이 보이고 "실시간"이라는 말이 없나
+   - ⑦ 타이포: `type.css` 밖에 `font-family`·`font-size`·`font-weight`·`line-height` 직접 값이 있나, 크기 단계 밖의 값이 있나, Pretendard·머니그라피 말고 다른 글꼴이 있나, 픽셀 글꼴이 문장에 쓰였나
    - ⑥ `ideas/*.md`가 규칙의 형식(필드 순서, 키워드 3~7개, status 값)을 지켰나
 4. 코드만으로 판단할 수 없는 것(화면이 실제로 뜨는지, 마이크가 반응하는지, 움직임의 느낌)은 "모름"으로 적는다.
 

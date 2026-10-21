@@ -1,0 +1,100 @@
+/* 타이포 위계. 글꼴·크기·굵기·줄간격·자간은 이 파일에서만 정한다(style.css는 배치·색·모양).
+   역할 7개: 디스플레이 > 섹션 제목 > 항목 제목 > 본문 > 라벨 > 캡션, 그리고 숫자 포인트(픽셀).
+   규칙은 .claude/rules/type.md */
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-body);
+  font-synthesis: none; /* 머니그라피는 굵기가 하나라 가짜 굵게·기울임을 막는다 */
+}
+
+/* 1. 디스플레이: 서비스 이름 하나만 */
+h1 {
+  font-family: var(--font-display);
+  font-size: var(--fs-display);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--track-snug);
+}
+
+/* 2. 섹션 제목 */
+.section-title {
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--track-snug);
+}
+
+/* 3. 항목 제목: 뉴스 카드, 정리 결과, 목록 한 줄 */
+.title,
+.idea-title,
+.state strong {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--track-snug);
+}
+.idea-row strong {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-snug);
+}
+
+/* 4. 본문 */
+.lede,
+.idea-summary,
+.todos,
+.mic-state,
+textarea,
+.empty,
+.ideas-fail,
+.state {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-body);
+  letter-spacing: 0;
+}
+[data-state=saved] .mic-state { font-weight: var(--fw-semibold); }
+
+/* 5. 라벨: 버튼·칩·배지·출처 */
+button,
+.chip,
+.kw,
+.badge,
+.src,
+.mode {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-label);
+  letter-spacing: 0;
+}
+.primary { font-size: var(--fs-md); font-weight: var(--fw-semibold); }
+.src { font-weight: var(--fw-semibold); }
+
+/* 6. 캡션: 보조 정보 */
+.meta,
+.idea-meta,
+.idea-foot,
+.note,
+footer,
+.api h2 {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-caption);
+  letter-spacing: var(--track-loose);
+}
+.api h2 { font-weight: var(--fw-semibold); }
+
+/* 7. 숫자 포인트: 머니그라피 픽셀. 짧은 숫자·날짜에만, 14px 이상 */
+.eyebrow,
+.count,
+.chip .n,
+.kw .n {
+  font-family: var(--font-pixel);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-regular);
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}

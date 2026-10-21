@@ -1,0 +1,18 @@
+/* 머니그라피(Viva Republica, 무료·웹 서버 설치 허용, 수정·재배포 금지).
+   토스 공식 페이지의 원본 woff2를 그대로 둔다. 파일을 고치거나 서브셋하지 않는다.
+   Pretendard는 index.html에서 jsDelivr CDN(OFL)으로 불러온다. */
+@font-face {
+  font-family: "Moneygraphy Rounded";
+  src: url("../fonts/Moneygraphy-Rounded-1.1.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Moneygraphy Pixel";
+  src: url("../fonts/Moneygraphy-Pixel_1.1.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}

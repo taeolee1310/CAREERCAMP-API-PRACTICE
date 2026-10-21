@@ -35,6 +35,7 @@ import news  # noqa: E402
 import organize  # noqa: E402
 
 PORT = int(os.environ.get("PORT", "3000"))
+mimetypes.add_type("font/woff2", ".woff2")  # Windows는 기본 등록이 없을 수 있다
 FILENAME = re.compile(r"\d{4}-\d{2}-\d{2}-\d{4}-[a-z0-9-]{1,30}\.md")
 MAX_MD = 20_000
 

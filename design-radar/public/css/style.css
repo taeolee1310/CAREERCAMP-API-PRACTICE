@@ -21,7 +21,7 @@ main {
 /* 탭 지연 없이 누르는 순간 반응하게 */
 button { font: inherit; color: inherit; cursor: pointer; white-space: nowrap; touch-action: manipulation; }
 a { color: inherit; touch-action: manipulation; }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; }
 
 .top {
   display: flex;
@@ -70,7 +70,7 @@ h1 { margin: var(--space-1) 0 0; font-size: var(--fs-xl); line-height: 1.15; let
 
 .card, .skeleton {
   min-height: 132px;
-  padding: var(--space-4);
+  overflow: hidden;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
@@ -79,21 +79,39 @@ h1 { margin: var(--space-1) 0 0; font-size: var(--fs-xl); line-height: 1.15; let
 .card a {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   height: 100%;
-  gap: var(--space-4);
   text-decoration: none;
   transition: transform var(--dur-press) var(--ease-out);
 }
+.card .body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4);
+}
+
+/* 기사 썸네일(링크 미리보기 이미지). 비율을 고정해서 이미지가 늦게 와도 카드가 밀리지 않는다 */
+.thumb {
+  aspect-ratio: 16 / 9;
+  background: var(--skeleton);
+  border-bottom: 1px solid var(--line);
+  overflow: hidden;
+}
+.thumb img { display: block; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity var(--dur-enter) var(--ease-out); }
+.thumb.loaded img { opacity: 1; }
+.thumb.none { display: grid; place-items: center; padding: var(--space-4); }
+.thumb.none span { color: var(--muted); font-size: var(--fs-lg); font-weight: 600; letter-spacing: var(--track-snug); text-align: center; }
 .card { box-shadow: var(--shadow); }
 @media (hover: hover) { .card:hover a { transform: translateY(-2px); } }
 .card:active a { transform: scale(.96); }
 
 .title { margin: 0; font-size: var(--fs-lg); line-height: 1.4; font-weight: 600; letter-spacing: var(--track-snug); text-wrap: pretty; }
 .meta { display: flex; justify-content: space-between; gap: var(--space-3); color: var(--muted); font-size: var(--fs-sm); letter-spacing: var(--track-loose); }
-.src { color: var(--accent); font-weight: 600; }
+.src { color: var(--accent-text); font-weight: 600; }
 
-.skeleton { animation: pulse var(--dur-pulse) var(--ease-in-out) infinite; background: var(--skeleton); border-color: transparent; }
+.skeleton { min-height: 280px; animation: pulse var(--dur-pulse) var(--ease-in-out) infinite; background: var(--skeleton); border-color: transparent; }
 @keyframes pulse { 50% { opacity: .5; } }
 
 .state { padding: var(--space-6) var(--space-4); text-align: center; color: var(--muted); }
@@ -179,7 +197,7 @@ footer { margin-top: var(--space-6); color: var(--muted); font-size: var(--fs-sm
 .mic-state { margin: 0; color: var(--muted); }
 [data-state=listening] .mic-state { color: var(--text); }
 [data-state=error] .mic-state { color: var(--danger); }
-[data-state=saved] .mic-state { color: var(--accent); font-weight: 600; }
+[data-state=saved] .mic-state { color: var(--accent-text); font-weight: 600; }
 [data-state=saved] .glyph { width: 22px; height: 12px; border-radius: 0; background: transparent; border: solid var(--accent-ink); border-width: 0 0 3px 3px; transform: translateY(-3px) rotate(-45deg); }
 
 textarea {
@@ -212,7 +230,7 @@ textarea {
 .idea-card { margin-top: var(--space-4); padding: var(--space-4); border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg); }
 .idea-head { display: flex; align-items: center; gap: var(--space-2); }
 .idea-title { margin: 0; font-size: var(--fs-lg); line-height: 1.35; letter-spacing: var(--track-snug); }
-.badge { flex: none; padding: calc(var(--space-1) / 2) var(--space-2); border-radius: var(--radius-pill); border: 1px solid var(--accent); color: var(--accent); font-size: var(--fs-sm); }
+.badge { flex: none; padding: calc(var(--space-1) / 2) var(--space-2); border-radius: var(--radius-pill); border: 1px solid var(--accent); color: var(--accent-text); font-size: var(--fs-sm); }
 .idea-summary { margin: var(--space-2) 0 var(--space-3); color: var(--muted); }
 .kws, .kw-cloud { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .kw { display: inline-block; padding: var(--space-1) var(--space-3); border-radius: var(--radius-pill); background: var(--skeleton); font-size: var(--fs-sm); }

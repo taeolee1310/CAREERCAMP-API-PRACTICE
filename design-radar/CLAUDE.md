@@ -7,6 +7,8 @@
 | --- | --- |
 | `public/` (`index.html`, `css/`, `js/`) | 정적 화면. 빌드 단계 없음. 애니메이션은 GSAP(CDN, 버전 고정). 배포 때 이 폴더만 공개된다 |
 | `public/css/tokens.css` | 색·간격·글자·움직임 값. 색을 바꿀 때는 이 파일만 고친다 |
+| `public/css/type.css` | 타이포 위계(글꼴·크기·굵기·줄간격·자간). 규칙은 `.claude/rules/type.md` |
+| `public/css/fonts.css`, `public/fonts/` | 머니그라피 `@font-face`와 원본 woff2(수정·재배포 금지) |
 | `api/*.py` | Vercel Python 함수. 키는 환경변수로만 읽는다. 출처·한도는 `api/README.md` |
 | `api/news.py` | 공개 RSS 7곳을 모아 `/api/news`로 내려 준다. 국내 출처는 디자인 키워드로 거른다 |
 | `api/organize.py` | `POST /api/organize`. 원문을 Gemini로 정리해 `ideas.md` 형식의 md와 파일 이름을 돌려준다. 원문은 LLM이 고치지 않는다 |
@@ -15,7 +17,7 @@
 | `dev.py` | 로컬 실행용 서버(`public/` + `/api/*` + `.env` 읽기). `/api/ideas` 저장·목록은 여기에만 있다. 배포에는 쓰지 않는다 |
 | `ideas/` | 정리된 아이디어 md. 로컬에서만 쌓인다 |
 | `.env` | 키. 커밋하지 않고 내용도 출력하지 않는다. 양식은 `.env.example` |
-| `.claude/rules/` | 자동 적용 규칙 (`ui.md`, `api.md`, `ideas.md`) |
+| `.claude/rules/` | 자동 적용 규칙 (`ui.md`, `type.md`, `api.md`, `ideas.md`) |
 | `.claude/skills/` | `/rule-check` 규칙 검사기 |
 
 규칙 파일이나 스킬을 새로 만들면 이 표에도 한 줄 적는다.

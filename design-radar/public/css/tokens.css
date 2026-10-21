@@ -1,18 +1,22 @@
 /* 색·간격·글자·움직임 값은 전부 여기서만 정한다. 색을 바꿀 때는 이 파일만 고친다. */
 :root {
-  --bg: #f3f1ec;
-  --surface: #fbfaf7;
-  --text: #202422;
-  --muted: #5f6663;
-  --line: #dedbd3;
-  --accent: #3f6b63;
-  --accent-ink: #ffffff;
-  --skeleton: #e8e5de;
-  --danger: #8a3b32;
+  /* 색: Teenage Engineering 무드. 알루미늄 회색 바탕 + 검정 글자 + 포인트 색은 #f35901 하나.
+     포인트 색은 면(버튼·칩·마이크)에 쓴다. 밝은 바탕에서 작은 글자로 쓰면 대비가 2.7:1이라
+     글자용은 같은 색을 어둡게 한 --accent-text(4.7:1)를 쓴다. 어두운 바탕에서는 둘이 같다 */
+  --bg: #e6e6e3;
+  --surface: #f5f5f3;
+  --text: #141414;
+  --muted: #595956;
+  --line: #cfcfcb;
+  --accent: #f35901;
+  --accent-ink: #141414;
+  --accent-text: #b04000;
+  --skeleton: #d8d8d4;
+  --danger: #b0001e;
 
   --radius: 14px;
   --radius-pill: 999px;
-  --shadow: 0 1px 2px rgba(20, 24, 22, .06), 0 8px 24px rgba(20, 24, 22, .05);
+  --shadow: 0 1px 2px rgba(20, 20, 20, .06), 0 8px 24px rgba(20, 20, 20, .05);
 
   --space-1: 4px;
   --space-2: 8px;
@@ -21,11 +25,33 @@
   --space-5: 24px;
   --space-6: 40px;
 
-  --font: "Pretendard Variable", Pretendard, system-ui, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-  --fs-sm: .8125rem;
-  --fs-md: .9375rem;
-  --fs-lg: 1.0625rem;
-  --fs-xl: clamp(1.75rem, 4vw, 2.5rem);
+  /* 글꼴: Pretendard(본문·UI 전부) + 머니그라피(디스플레이·숫자 포인트)만 쓴다. 규칙은 .claude/rules/type.md */
+  --font-sans: "Pretendard Variable", Pretendard, system-ui, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-display: "Moneygraphy Rounded", var(--font-sans);
+  --font-pixel: "Moneygraphy Pixel", var(--font-sans);
+  --font: var(--font-sans);
+
+  /* 크기 단계: 12 · 14 · 16 · 18 · 20 · 24 · 디스플레이(32~48). 이 밖의 크기는 쓰지 않는다 */
+  --fs-xs: .75rem;
+  --fs-sm: .875rem;
+  --fs-md: 1rem;
+  --fs-lg: 1.125rem;
+  --fs-xl: 1.25rem;
+  --fs-2xl: 1.5rem;
+  --fs-display: clamp(2rem, 1.5rem + 2.5vw, 3rem);
+
+  /* 굵기: 본문 400 · 라벨 500 · 항목 제목 600 · 섹션 제목 700 */
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  /* 줄간격 */
+  --lh-tight: 1.15;    /* 디스플레이 */
+  --lh-snug: 1.35;     /* 제목 */
+  --lh-label: 1.3;     /* 버튼·칩 */
+  --lh-caption: 1.5;   /* 작은 글 */
+  --lh-body: 1.65;     /* 본문 */
 
   --track-tight: -.025em;   /* 큰 제목 */
   --track-snug: -.01em;     /* 섹션·카드 제목 */
@@ -44,29 +70,31 @@
 }
 
 :root[data-theme=dark] {
-  --bg: #121513;
-  --surface: #1a1e1c;
-  --text: #e8ebe9;
-  --muted: #a0a7a3;
-  --line: #2b312e;
-  --accent: #8bb8ae;
-  --accent-ink: #0f1412;
-  --skeleton: #232826;
-  --danger: #e19a8f;
+  --bg: #111111;
+  --surface: #1c1c1c;
+  --text: #ececea;
+  --muted: #a3a39e;
+  --line: #2e2e2c;
+  --accent: #f35901;
+  --accent-ink: #111111;
+  --accent-text: #f35901;
+  --skeleton: #272727;
+  --danger: #ff7b7b;
   --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme=light]) {
-    --bg: #121513;
-    --surface: #1a1e1c;
-    --text: #e8ebe9;
-    --muted: #a0a7a3;
-    --line: #2b312e;
-    --accent: #8bb8ae;
-    --accent-ink: #0f1412;
-    --skeleton: #232826;
-    --danger: #e19a8f;
+    --bg: #111111;
+    --surface: #1c1c1c;
+    --text: #ececea;
+    --muted: #a3a39e;
+    --line: #2e2e2c;
+    --accent: #f35901;
+    --accent-ink: #111111;
+    --accent-text: #f35901;
+    --skeleton: #272727;
+    --danger: #ff7b7b;
     --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
   }
 }

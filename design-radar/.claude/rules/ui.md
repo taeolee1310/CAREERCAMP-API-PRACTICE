@@ -3,6 +3,7 @@
 
 ### 토큰과 구조
 - 색·간격·글자 크기·곡선·시간은 `public/css/tokens.css`의 CSS 변수로만 쓴다. JS에서 시간이 필요하면 `getComputedStyle`로 토큰을 읽는다. 다른 CSS·JS 파일에 색상 값(`#…`, `rgb()`, `hsl()`)을 직접 쓰지 않는다. (왜: 일관성을 한 곳에서 잡으려고)
+- 색 무드는 Teenage Engineering: 알루미늄 회색 바탕, 검정 글자, 포인트 색은 `#f35901` 하나(`--accent`). 포인트 색은 면에 쓰고 위 글자는 검정(`--accent-ink`). 밝은 바탕의 작은 글자에는 `--accent-text`(같은 색을 어둡게 한 것)를 쓴다. 포인트 색을 더 늘리지 않는다. (2026-10-21 태오님 결정)
 - 다크/라이트: 다크 값은 `:root[data-theme=dark]`와 `@media (prefers-color-scheme:dark){ :root:not([data-theme=light]) }` 두 곳에 같은 값을 넣는다. 선택은 `localStorage`의 `theme`에 저장하고, 없으면 기기 설정을 따른다.
 - 외부 스크립트는 GSAP 하나만 쓰고 버전을 고정한 CDN 주소(`gsap/3.12.5`)를 `public/index.html` 한 곳에만 둔다. 다른 애니메이션 라이브러리를 추가하지 않는다. GSAP이 안 불러와져도 내용은 보여야 한다(애니메이션만 빠짐). (왜: 움직임이 매번 달라지지 않게)
 - 피드에서 온 글자는 `textContent`로만 넣는다. `innerHTML`에 외부 데이터를 넣지 않는다.

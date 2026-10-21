@@ -19,6 +19,9 @@ const cssSec = (name) => parseFloat(cssVar(name)) / 1000;
 
 let news = null;
 let group = "all";
+let asOf = null;
+let loadedAt = 0;
+const REFRESH_MS = 30 * 60 * 1000; // 서버 캐시와 같은 30분
 
 /* 테마 */
 const isDark = () => root.dataset.theme
@@ -61,6 +64,33 @@ function relTime(iso) {
   return kst({ month: "long", day: "numeric" }, new Date(iso));
 }
 
+/* 썸네일: 기사의 대표 이미지(링크 미리보기용). 없거나 깨지면 출처 이름 판으로 대신한다 */
+function thumb(item) {
+  const box = document.createElement("div");
+  box.className = "thumb";
+  const fallback = () => {
+    box.replaceChildren();
+    box.classList.add("none");
+    const s = document.createElement("span");
+    s.textContent = item.source;
+    box.append(s);
+  };
+  if (!item.thumb) {
+    fallback();
+    return box;
+  }
+  const img = document.createElement("img");
+  img.alt = "";
+  img.loading = "lazy";
+  img.decoding = "async";
+  img.referrerPolicy = "no-referrer";
+  img.addEventListener("load", () => box.classList.add("loaded"), { once: true });
+  img.addEventListener("error", fallback, { once: true });
+  img.src = item.thumb;
+  box.append(img);
+  return box;
+}
+
 function card(item) {
   const li = document.createElement("li");
   li.className = "card";
@@ -79,7 +109,10 @@ function card(item) {
   const d = document.createElement("span");
   d.textContent = relTime(item.date);
   meta.append(s, d);
-  a.append(t, meta);
+  const body = document.createElement("div");
+  body.className = "body";
+  body.append(t, meta);
+  a.append(thumb(item), body);
   li.append(a);
   return li;
 }
@@ -161,7 +194,8 @@ function renderFooter(asOf) {
   p.replaceChildren();
   p.append(
     `출처: ${news.sources.filter((s) => s.ok).map((s) => s.name).join(", ")}. 제목과 링크만 보여 줘요. 본문은 원문에서 읽어 주세요. `,
-    `${kst({ month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" }, new Date(asOf))} 기준이고, 30분마다 새로 받아요.`
+    `${kst({ month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" }, new Date(asOf))} 기준이에요. `,
+    "화면을 켜 두면 30분마다 새 소식과 썸네일로 바뀌어요."
   );
   if (failed.length) {
     const f = document.createElement("span");
@@ -191,10 +225,7 @@ async function load() {
     const res = await fetch(API.news); // 🔌 API 호출
     const json = await res.json();
     if (!json.ok) throw Object.assign(new Error(json.error), { friendly: true });
-    news = json.data;
-    renderChips();
-    renderFooter(json.asOf);
-    renderList();
+    show(json);
   } catch (e) {
     $("grid").replaceChildren();
     const msg = e.friendly
@@ -205,5 +236,29 @@ async function load() {
     setState("fail", "소식을 불러오지 못했어요", msg, true);
   }
 }
+
+function show(json) {
+  news = json.data;
+  asOf = json.asOf;
+  loadedAt = Date.now();
+  renderChips();
+  renderFooter(json.asOf);
+  renderList();
+}
+
+/* 조용한 새로고침: 로딩 화면 없이 받아 보고, 서버 기준 시각이 바뀌었을 때만 다시 그린다 */
+async function refresh() {
+  if (!news || document.hidden) return;
+  try {
+    const res = await fetch(API.news, { cache: "no-store" }); // 🔌 API 호출
+    const json = await res.json();
+    if (json.ok && json.asOf !== asOf) show(json);
+    else loadedAt = Date.now();
+  } catch {} // 실패하면 지금 보이는 소식을 그대로 둔다
+}
+setInterval(refresh, REFRESH_MS);
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden && Date.now() - loadedAt > REFRESH_MS) refresh();
+});
 
 load();

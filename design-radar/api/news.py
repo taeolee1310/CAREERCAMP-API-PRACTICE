@@ -1,10 +1,13 @@
 """디자인 뉴스 수집 (Vercel Python 함수). 키가 필요 없는 공개 RSS만 쓴다.
 
-제목·출처·링크·날짜만 내려 준다. 본문은 복사하지 않는다.
+제목·출처·링크·날짜와 대표 이미지 주소만 내려 준다. 본문은 복사하지 않는다.
+대표 이미지는 RSS에 있으면 그것을, 없으면 기사 페이지의 og:image(링크 미리보기용 이미지)를 쓴다.
 """
+import html
 import json
 import re
 import time
+import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
 from concurrent.futures import ThreadPoolExecutor
@@ -27,6 +30,10 @@ CACHE_SECONDS = 1800
 PER_SOURCE = 15
 MAX_BYTES = 2_000_000
 TIMEOUT = 10
+# 기사 페이지는 대표 이미지를 찾을 때만 앞부분을 읽는다. 한 번 찾은 결과는 서버가 켜져 있는 동안 기억한다
+PAGE_BYTES = 300_000
+PAGE_TIMEOUT = 6
+PAGE_FETCH_MAX = 40  # 새로 받을 때마다 기사 페이지는 최대 40곳만 연다
 
 # 국내 출처는 개발·기획 글도 섞여 있어서 디자인 관련 글만 남긴다.
 KR_KEYWORDS = re.compile(
@@ -35,6 +42,12 @@ KR_KEYWORDS = re.compile(
 )
 
 _cache = {"at": 0.0, "payload": None}
+_thumbs = {}  # 기사 링크 → 이미지 주소("" = 없음)
+
+MEDIUM_SIZE = re.compile(r"medium\.com/(?:max/\d+|v2/resize:fit:\d+)/")
+IMG_SRC = re.compile(r"<img[^>]+src=[\"']([^\"']+)[\"']", re.IGNORECASE)
+OG_TAG = re.compile(r"<meta[^>]+(?:property|name)=[\"'](?:og:image|twitter:image)[\"'][^>]*>", re.IGNORECASE)
+CONTENT_ATTR = re.compile(r"content=[\"']([^\"']+)[\"']", re.IGNORECASE)
 
 
 def _name(tag):
@@ -76,6 +89,60 @@ def _date(el):
     return d.astimezone(timezone.utc)
 
 
+def _clean_img(url):
+    url = html.unescape(url or "").strip()
+    if url.startswith("//"):
+        url = "https:" + url
+    if not url.startswith("https://") or len(url) > 600:  # 화면이 https라 http 이미지는 막힌다
+        return ""
+    # Medium(UX Collective) 원본은 수 MB라서 썸네일 크기로 받는다
+    return MEDIUM_SIZE.sub("medium.com/v2/resize:fit:640/", url)
+
+
+def _rss_image(el):
+    for c in el.iter():
+        tag = _name(c.tag)
+        if tag in ("thumbnail", "content") and c.get("url") and c.get("medium", "image") == "image":
+            return _clean_img(c.get("url"))
+        if tag == "enclosure" and (c.get("type") or "").startswith("image/"):
+            return _clean_img(c.get("url"))
+    for c in el:
+        if _name(c.tag) in ("encoded", "description", "content", "summary") and c.text:
+            m = IMG_SRC.search(c.text)
+            if m:
+                return _clean_img(m.group(1))
+    return ""
+
+
+def _og_image(link):
+    if link in _thumbs:
+        return _thumbs[link]
+    found = ""
+    try:
+        req = urllib.request.Request(link, headers={"User-Agent": "Mozilla/5.0 DesignRadar"})
+        with urllib.request.urlopen(req, timeout=PAGE_TIMEOUT) as res:
+            page = res.read(PAGE_BYTES).decode("utf-8", "replace")
+        tag = OG_TAG.search(page)
+        attr = CONTENT_ATTR.search(tag.group(0)) if tag else None
+        if attr:
+            found = urllib.parse.urljoin(link, html.unescape(attr.group(1)))
+            found = _clean_img(found)
+    except Exception:  # 이미지는 없어도 된다
+        pass
+    _thumbs[link] = found
+    return found
+
+
+def _fill_thumbs(items):
+    for i in items:
+        if not i["thumb"] and i["link"] in _thumbs:
+            i["thumb"] = _thumbs[i["link"]]
+    todo = [i for i in items if not i["thumb"] and i["link"] not in _thumbs][:PAGE_FETCH_MAX]
+    with ThreadPoolExecutor(max_workers=16) as pool:
+        for i, url in zip(todo, pool.map(lambda i: _og_image(i["link"]), todo)):
+            i["thumb"] = url
+
+
 def _fetch(feed):
     req = urllib.request.Request(feed["url"], headers={"User-Agent": "Mozilla/5.0 DesignRadar"})
     with urllib.request.urlopen(req, timeout=TIMEOUT) as res:
@@ -102,6 +169,7 @@ def _fetch(feed):
             "source": feed["name"],
             "group": feed["group"],
             "date": d.isoformat() if d else None,
+            "thumb": _rss_image(el),
         })
         if len(items) >= PER_SOURCE:
             break
@@ -128,9 +196,11 @@ def get_news():
     if not any(s["ok"] for s in sources):
         return {"ok": False, "error": "뉴스를 가져오지 못했어요. 잠시 뒤에 다시 시도해 주세요."}
     items.sort(key=lambda i: i["date"] or "", reverse=True)
+    items = items[:80]
+    _fill_thumbs(items)
     payload = {
         "ok": True,
-        "data": {"items": items[:80], "sources": sources},
+        "data": {"items": items, "sources": sources},
         "asOf": datetime.now(timezone.utc).isoformat(),
     }
     _cache.update(at=now, payload=payload)
